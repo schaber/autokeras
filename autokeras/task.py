@@ -108,7 +108,7 @@ class ImageClassifier(SupervisedImagePipeline):
                     validation_split=validation_split,
                     validation_data=validation_data,
                     objective=objective,
-                    tuner=tuner_module.ImageClassifierTuner(),
+                    tuner='image_classifier',
                     **kwargs)
 
 
