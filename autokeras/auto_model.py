@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow.python.util import nest
 
 from autokeras import meta_model
-from autokeras import tuner
+from autokeras import tuner as tuner_module
 from autokeras import utils
 from autokeras.hypermodel import base
 from autokeras.hypermodel import graph
@@ -70,6 +70,7 @@ class AutoModel(object):
             validation_split=0,
             validation_data=None,
             objective='val_loss',
+            tuner='random_search',
             **kwargs):
         """Search for the best model and hyperparameters for the AutoModel.
 
@@ -106,6 +107,8 @@ class AutoModel(object):
                 validation data.
             objective: String. Name of model metric to minimize
                 or maximize, e.g. 'val_accuracy'. Defaults to 'val_loss'.
+            tuner: String. The tuner to be used for the search.
+                Defaults to 'random_search'.
             **kwargs: Any arguments supported by keras.Model.fit.
         """
         dataset, validation_data = self._prepare_data(
@@ -124,7 +127,7 @@ class AutoModel(object):
             dataset=dataset,
             validation_data=validation_data,
             fit=True)
-        self.tuner = tuner.RandomSearch(
+        self.tuner = tuner_module.get_tuner_class(tuner)(
             hyper_graph=self.hyper_graph,
             fit_on_val_data=self._split_dataset,
             hypermodel=keras_graph,
